@@ -1,12 +1,13 @@
-import os, re, sys
+import os
+import re
+import sys
 
 
 def child(raw_cmd):
     cmd = tok(raw_cmd)
     # simple single command shell
     fname = cmd[0]
-    args = cmd[1:]
-    print(args)
+    args = cmd  # By convention args[0] is the filename anyways
 
     for directory in re.split(":", os.environ['PATH']):  # walk the path
         program = f"{directory}/{fname}"
@@ -34,11 +35,14 @@ def main():
             child(raw_cmd)
         else:  # fork is ok
             child_pid = os.wait()
-            print(f"Child terminted with exit code{child_pid}")
+            # if child_pid < 0:
+            #     print(f"Child terminted with exit code{child_pid}")
 
 
+# Example:
+# ls -a -lh --list => ['ls', '-a', '-lh', '--list']
 def tok(val):
-    return re.findall('\w+', val)
+    return re.split('\s+', val)
 
 
 if __name__ == '__main__':
